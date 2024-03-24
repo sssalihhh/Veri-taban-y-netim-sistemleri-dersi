@@ -1,0 +1,99 @@
+create database school_library;
+USE school_library;
+
+CREATE TABLE uyeler (
+    uyeNo INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+    uyeAdi NVARCHAR(50) NOT NULL,
+    uyeSoyadi NVARCHAR(50) NOT NULL,
+    cinsiyet NCHAR(5),
+    eposta NVARCHAR(100),
+    telefon NVARCHAR(15),
+    adresNo INT
+);
+
+CREATE TABLE adresler (
+    adresNo INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+    sehir NVARCHAR(50) NOT NULL,
+    mahalle NVARCHAR(50) NOT NULL,
+    cadde NVARCHAR(50) NOT NULL,
+    binaNo INT,
+    postaKodu NVARCHAR(20),
+    ulke NVARCHAR(50)
+);
+
+CREATE TABLE KUTUPHANE (
+    KUTUPHANENO INT PRIMARY KEY IDENTITY(1,1),
+    KUTUPHANEISMI NVARCHAR(50),
+    ACIKLAMA NVARCHAR(200),
+    ADRESNO INT,
+    CONSTRAINT FK_kutuphane_adres FOREIGN KEY (ADRESNO) REFERENCES adresler(adresNo)
+);
+
+CREATE TABLE KITAPLAR (
+    ISBN NVARCHAR(50) PRIMARY KEY,
+    KITAPADI NVARCHAR(50),
+    SAYFASAYISI INT,
+    YAYINTARIHI DATETIME
+);
+
+CREATE TABLE KATEGORI (
+    KATEGORI_ID INT PRIMARY KEY IDENTITY(1,1),
+    KATEGORI_AD NVARCHAR(50)
+);
+
+CREATE TABLE YAZARLAR (
+    YAZAR_ID INT PRIMARY KEY IDENTITY(1,1),
+    YAZAR_ADI NVARCHAR(50),
+    YAZAR_SOYADI NVARCHAR(50)
+);
+
+CREATE TABLE EMANET (
+    emanetNo INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    emanetTarihi DATETIME,
+    teslimTarihi DATETIME,
+    uyeNo INT,
+    kutuphaneNo INT,
+    ISBN NVARCHAR(50),
+    CONSTRAINT FK_uyeler_emanet FOREIGN KEY (uyeNo) REFERENCES uyeler(uyeNo),
+    CONSTRAINT FK_kutuphane_emanet FOREIGN KEY (kutuphaneNo) REFERENCES KUTUPHANE(KUTUPHANENO),
+    CONSTRAINT FK_kitap_emanet FOREIGN KEY(ISBN) REFERENCES KITAPLAR(ISBN)
+);
+
+INSERT INTO uyeler (uyeAdi, uyeSoyadi, cinsiyet, eposta, telefon, adresNo)
+VALUES 
+('Salih', 'Efendi', 'E', 'salih123@mail.com', '5558966742', 1),
+('Ayşe', 'Efendi', 'K', 'ayse123@mail.com', '5428967389', 2);
+
+INSERT INTO adresler (sehir, mahalle, cadde, binaNo, postaKodu, ulke)
+VALUES 
+('Ankara', 'Çankaya', 'XXXX Cad.', 55, '55555', 'Türkiye'),
+('İstanbul', 'Kurtköy', 'YYYY Cad.', 44, '44444', 'Türkiye');
+
+INSERT INTO KUTUPHANE (KUTUPHANEISMI, ACIKLAMA, ADRESNO)
+VALUES 
+('Ankara Kütüphanesi', 'Ankara''nin Çankaya''sında bulunan kütüphane.', 1),
+('İstanbul Kütüphanesi', 'İstanbul''un Kurtköy''ünde yer alan kütüphane.', 2);
+
+INSERT INTO KITAPLAR (ISBN, KITAPADI, SAYFASAYISI, YAYINTARIHI)
+VALUES 
+('1111111111', 'Eylül', 200, '1900-01-01'),
+('0101010101', 'Lordlar Ve Varisleri', 300, '2022-02-02');
+
+INSERT INTO KATEGORI (KATEGORI_AD)
+VALUES 
+('Roman'),
+('Öykü'),
+('Fantastik');
+
+INSERT INTO YAZARLAR (YAZAR_ADI, YAZAR_SOYADI)
+VALUES 
+('Mehmet', 'Rauf'),
+('N.G', 'Kabal'),
+('Eilis', 'Barret');
+
+INSERT INTO EMANET (emanetTarihi, teslimTarihi, uyeNo, kutuphaneNo, ISBN)
+VALUES
+('2024-01-01', '2024-02-20', 1, 1, '1111111111'),
+('2024-02-22', '2024-03-22', 2, 2, '0101010101');
+
+
